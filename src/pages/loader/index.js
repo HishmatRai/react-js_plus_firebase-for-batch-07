@@ -1,20 +1,23 @@
 import React, { useEffect } from "react";
 import { getAuth, onAuthStateChanged } from "firebase/auth";
-import {useNavigate} from 'react-router-dom'
+import { useNavigate } from "react-router-dom";
 import firebase from "../../config/firebase";
 const Loader = () => {
   const auth = getAuth();
-  const navigate = useNavigate()
+  const navigate = useNavigate();
   useEffect(() => {
     onAuthStateChanged(auth, (user) => {
       if (user) {
-        console.log("login true ");
-        navigate("/home")
+        if (user.emailVerified) {
+          navigate("/home");
+        } else {
+          navigate("/email-verification");
+        }
       } else {
         // User is signed out
         console.log("login false");
         // login
-        navigate("/login")
+        navigate("/login");
       }
     });
   }, []);
