@@ -5,4 +5,14 @@ import Login from "./login";
 import SignUp from "./sign-up";
 import EmailVerification from "./email-verification";
 import ForgotPassword from "./forgot-password";
-export { Home, NotFound ,Loader,Login,SignUp,EmailVerification,ForgotPassword};
+import CreateBlog from "./create-blog";
+export {
+  Home,
+  NotFound,
+  Loader,
+  Login,
+  SignUp,
+  EmailVerification,
+  ForgotPassword,
+  CreateBlog
+};

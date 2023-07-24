@@ -8,6 +8,7 @@ import {
 } from "firebase/auth";
 import { getFirestore, doc, setDoc } from "firebase/firestore";
 import firebase from "../../config/firebase";
+
 const SignUp = () => {
   const auth = getAuth();
   const navigate = useNavigate()

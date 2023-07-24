@@ -39,7 +39,7 @@ function ResponsiveAppBar() {
   // logout
   const Logout = () => {
     signOut(auth).then(() => {
-        navigate('/login')
+      navigate("/login");
     });
   };
   return (
@@ -89,13 +89,18 @@ function ResponsiveAppBar() {
                 horizontal: "left",
               }}
               open={Boolean(anchorElNav)}
-              onClose={handleCloseNavMenu}
+              onClose={handleOpenNavMenu}
               sx={{
                 display: { xs: "block", md: "none" },
               }}
             >
               {pages.map((page) => (
-                <MenuItem key={page} onClick={handleCloseNavMenu}>
+                <MenuItem
+                  key={page}
+                  onClick={() => {
+                    navigate("/create-blog");
+                  }}
+                >
                   <Typography textAlign="center">{page}</Typography>
                 </MenuItem>
               ))}
@@ -124,7 +129,9 @@ function ResponsiveAppBar() {
             {pages.map((page) => (
               <Button
                 key={page}
-                onClick={handleCloseNavMenu}
+                onClick={() => {
+                  navigate("/create-blog");
+                }}
                 sx={{ my: 2, color: "white", display: "block" }}
               >
                 {page}
@@ -158,8 +165,7 @@ function ResponsiveAppBar() {
                 <MenuItem
                   key={setting}
                   onClick={() => {
-                    setting === "Logout" && 
-                    Logout()
+                    setting === "Logout" && Logout();
                     // handleCloseUserMenu();
                   }}
                 >

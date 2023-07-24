@@ -8,7 +8,11 @@ const Home = () => {
   useEffect(() => {
     onAuthStateChanged(auth, (user) => {
       if (user) {
-        console.log("login true");
+        if (user.emailVerified) {
+          // login true
+        } else {
+          navigate("/email-verification");
+        }
       } else {
         navigate("/login");
       }

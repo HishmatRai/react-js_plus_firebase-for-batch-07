@@ -8,6 +8,7 @@ import {
   SignUp,
   EmailVerification,
   ForgotPassword,
+  CreateBlog
 } from "../../pages";
 const RouterNavigation = () => {
   return (
@@ -19,6 +20,7 @@ const RouterNavigation = () => {
         <Route path="/sign-up" element={<SignUp />} />
         <Route path="/email-verification" element={<EmailVerification />} />
         <Route path="/forgot-password" element={<ForgotPassword />} />
+        <Route path="/create-blog" element={<CreateBlog />} />
         <Route path="*" element={<NotFound />} />
       </Routes>
     </BrowserRouter>
