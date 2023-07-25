@@ -15,7 +15,7 @@ const SignUp = () => {
   const db = getFirestore(firebase);
   const [fullName, setFullName] = useState("Ihunar Academy");
   const [userName, setUserName] = useState("ihunar");
-  const [mobileNumber, serMobileNumber] = useState("03232323232");
+  const [mobileNumber, setMobileNumber] = useState("03232323232");
   const [gender, setGender] = useState("Male");
   const [email, setEmail] = useState("info@gmail.com");
   const [password, setPassword] = useState("123456");
@@ -95,7 +95,7 @@ const SignUp = () => {
         type="number"
         placeholder="Enter mobile number"
         value={mobileNumber}
-        onChange={(e) => serMobileNumber(e.target.value)}
+        onChange={(e) => setMobileNumber(e.target.value)}
       />
       <select onChange={(e) => setGender(e.target.value)}>
         <option value="">Select Gender</option>

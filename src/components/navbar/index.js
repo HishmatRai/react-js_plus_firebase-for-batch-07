@@ -165,7 +165,7 @@ function ResponsiveAppBar() {
                 <MenuItem
                   key={setting}
                   onClick={() => {
-                    setting === "Logout" && Logout();
+                    setting === "Logout" ?  Logout() : navigate('/profile');
                     // handleCloseUserMenu();
                   }}
                 >

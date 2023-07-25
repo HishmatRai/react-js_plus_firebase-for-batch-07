@@ -64,17 +64,13 @@ const CreateBlog = () => {
   const [imagePath, setPath] = useState("");
   const [progress, setProgress] = useState(0);
   const [uploadStarted, setUploadStarted] = useState(false);
+  let [uid, setUid] = useState("");
+
   useEffect(() => {
     onAuthStateChanged(auth, (user) => {
       if (user) {
         if (user.emailVerified) {
-          // login true
-          //   const timer = setInterval(() => {
-          //     setProgress((prevProgress) => (prevProgress >= 100 ? 0 : prevProgress + 10));
-          //   }, 800);
-          //   return () => {
-          //     clearInterval(timer);
-          //   };
+          setUid(user.uid)
         } else {
           navigate("/email-verification");
         }
@@ -131,6 +127,7 @@ const CreateBlog = () => {
         title: title,
         details: details,
         imagePath: imagePath,
+        uid: uid,
       });
       setMessage("success");
       setMessageType("success");

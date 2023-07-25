@@ -6,6 +6,7 @@ import SignUp from "./sign-up";
 import EmailVerification from "./email-verification";
 import ForgotPassword from "./forgot-password";
 import CreateBlog from "./create-blog";
+import Profile from "./profile";
 export {
   Home,
   NotFound,
@@ -14,5 +15,6 @@ export {
   SignUp,
   EmailVerification,
   ForgotPassword,
-  CreateBlog
+  CreateBlog,
+  Profile,
 };
