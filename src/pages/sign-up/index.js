@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Link,useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { Input, Button } from "./../../components";
 import {
   getAuth,
@@ -11,7 +11,7 @@ import firebase from "../../config/firebase";
 
 const SignUp = () => {
   const auth = getAuth();
-  const navigate = useNavigate()
+  const navigate = useNavigate();
   const db = getFirestore(firebase);
   const [fullName, setFullName] = useState("Ihunar Academy");
   const [userName, setUserName] = useState("ihunar");
@@ -57,11 +57,12 @@ const SignUp = () => {
               gender: gender,
               email: email,
               password: password,
+              profileURL: "",
             });
             setLoader(false);
             setMessageType("success");
             setMessage("success");
-            navigate("/email-verification")
+            navigate("/email-verification");
           });
         })
         .catch((error) => {

@@ -11,6 +11,7 @@ import {
   getDownloadURL,
 } from "firebase/storage";
 import uuid from "react-uuid";
+import moment from "moment";
 import PropTypes from "prop-types";
 import CircularProgress from "@mui/material/CircularProgress";
 import Typography from "@mui/material/Typography";
@@ -128,6 +129,7 @@ const CreateBlog = () => {
         details: details,
         imagePath: imagePath,
         uid: uid,
+        created:moment().format()
       });
       setMessage("success");
       setMessageType("success");

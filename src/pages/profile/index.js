@@ -2,20 +2,22 @@ import React, { useEffect, useState } from "react";
 import { getAuth, onAuthStateChanged } from "firebase/auth";
 import { useNavigate } from "react-router-dom";
 import { Navbar, Button, Input } from "../../components";
-import {
-  collection,
-  query,
-  where,
-  onSnapshot,
-  getFirestore,
-  doc,
-} from "firebase/firestore";
+import { onSnapshot, getFirestore, doc, updateDoc } from "firebase/firestore";
 import firebase from "../../config/firebase";
+import Avatar from "@mui/material/Avatar";
+import {
+  getStorage,
+  ref,
+  uploadBytesResumable,
+  getDownloadURL,
+} from "firebase/storage";
+
 const Profile = () => {
   const auth = getAuth();
   const navigate = useNavigate();
+  const storage = getStorage();
   const db = getFirestore(firebase);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
   const [fullName, setFullName] = useState("");
   const [userName, setUserName] = useState("");
   const [mobileNumber, setMobileNumber] = useState("");
@@ -24,11 +26,13 @@ const Profile = () => {
   const [message, setMessage] = useState("");
   const [messageType, setMessageType] = useState("");
   const [loader, setLoader] = useState(true);
+  const [uid, setUid] = useState("");
+  const [profielImagePath, setProfileImagePath] = useState("");
   useEffect(() => {
     onAuthStateChanged(auth, async (user) => {
       if (user) {
         if (user.emailVerified) {
-          //
+          setUid(user.uid);
           const unsub = onSnapshot(doc(db, "users", user.uid), (doc) => {
             setLoader(false);
             console.log("Current data: ", doc.data());
@@ -38,6 +42,7 @@ const Profile = () => {
             setMobileNumber(data.mobileNumber);
             setGender(data.gender);
             setEmail(data.email);
+            setProfileImagePath(data.profileURL);
           });
         } else {
           navigate("/email-verification");
@@ -47,6 +52,63 @@ const Profile = () => {
       }
     });
   }, []);
+
+  const UpdateProfile = async () => {
+    setMessageType("error");
+    setLoading(true);
+    if (fullName === "") {
+      setMessage("Full Name required");
+      setLoading(false);
+    } else if (userName === "") {
+      setMessage("Username required");
+      setLoading(false);
+    } else if (mobileNumber === "") {
+      setMessage("Mobile number required");
+      setLoading(false);
+    } else if (gender === "") {
+      setMessage("Gender required");
+      setLoading(false);
+    } else {
+      // update
+      const washingtonRef = doc(db, "users", uid);
+      await updateDoc(washingtonRef, {
+        fullName: fullName,
+        userName: userName,
+        mobileNumber: mobileNumber,
+        gender: gender,
+      });
+      setLoading(false);
+      setMessageType("success");
+      setMessage("success");
+    }
+  };
+
+  const UploadProfileImage = (e) => {
+    let file = e.target.files[0];
+    const storageRef = ref(storage, `profile-images/${uid}`);
+    const uploadTask = uploadBytesResumable(storageRef, file);
+    uploadTask.on(
+      "state_changed",
+      (snapshot) => {
+        const progress = Math.ceil(
+          (snapshot.bytesTransferred / snapshot.totalBytes) * 100
+        );
+        console.log("Upload is " + progress + "% done");
+      },
+      (error) => {
+        // Handle unsuccessful uploads
+      },
+      () => {
+        getDownloadURL(uploadTask.snapshot.ref).then(async (downloadURL) => {
+          setProfileImagePath(downloadURL);
+          const washingtonRef = doc(db, "users", uid);
+          await updateDoc(washingtonRef, {
+            profileURL: downloadURL,
+          });
+        });
+      }
+    );
+  };
   return (
     <div>
       <Navbar />
@@ -54,6 +116,19 @@ const Profile = () => {
         <h1>Loading....</h1>
       ) : (
         <div>
+          <Avatar
+            alt="Remy Sharp"
+            src={
+              profielImagePath === ""
+                ? "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTlseazoU9HMxMy6AnQyEXjboZQaAXLhWmwtV6yFvc&s"
+                : profielImagePath
+            }
+            style={{ width: 150, height: 150 }}
+          />
+          <input type="file" onChange={(e) => UploadProfileImage(e)} />
+          <br />
+          <br />
+          <br />
           <Input
             title="Full Name"
             type="text"
@@ -73,7 +148,6 @@ const Profile = () => {
             type="number"
             placeholder="Enter mobile number"
             value={mobileNumber}
-           
             onChange={(e) => setMobileNumber(e.target.value)}
           />
           <select onChange={(e) => setGender(e.target.value)}>
@@ -81,7 +155,9 @@ const Profile = () => {
             <option value="Male" selected={gender === "Male" && true}>
               Male
             </option>
-            <option value="Female" selected={gender === "Female" && true}>Female</option>
+            <option value="Female" selected={gender === "Female" && true}>
+              Female
+            </option>
           </select>
 
           <Input
@@ -95,7 +171,7 @@ const Profile = () => {
           <p style={{ color: messageType === "error" ? "red" : "green" }}>
             {message}
           </p>
-          <Button title="Update" loader={loader} />
+          <Button title="Update" loader={loading} onClick={UpdateProfile} />
         </div>
       )}
     </div>

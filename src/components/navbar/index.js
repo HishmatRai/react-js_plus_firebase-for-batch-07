@@ -1,4 +1,4 @@
-import * as React from "react";
+import React, { useEffect, useState } from "react";
 import AppBar from "@mui/material/AppBar";
 import Box from "@mui/material/Box";
 import Toolbar from "@mui/material/Toolbar";
@@ -12,15 +12,28 @@ import Button from "@mui/material/Button";
 import Tooltip from "@mui/material/Tooltip";
 import MenuItem from "@mui/material/MenuItem";
 import AdbIcon from "@mui/icons-material/Adb";
-import { getAuth, signOut } from "firebase/auth";
+import { getAuth, signOut, onAuthStateChanged } from "firebase/auth";
 import { useNavigate } from "react-router-dom";
+import {
+  collection,
+  query,
+  where,
+  onSnapshot,
+  getFirestore,
+  doc,
+} from "firebase/firestore";
+import firebase from "../../config/firebase";
+import CircularProgress from "@mui/material/CircularProgress";
 const pages = ["Create Blog"];
 const settings = ["Profile", "Logout"];
 function ResponsiveAppBar() {
   const auth = getAuth();
+  const db = getFirestore(firebase);
   const navigate = useNavigate();
   const [anchorElNav, setAnchorElNav] = React.useState(null);
   const [anchorElUser, setAnchorElUser] = React.useState(null);
+  const [profielImagePath, setProfileImagePath] = useState("");
+  const [loading, setLoading] = useState(true);
   const handleOpenNavMenu = (event) => {
     setAnchorElNav(event.currentTarget);
   };
@@ -36,6 +49,19 @@ function ResponsiveAppBar() {
     setAnchorElUser(null);
   };
 
+  useEffect(() => {
+    onAuthStateChanged(auth, async (user) => {
+      if (user) {
+        if (user.emailVerified) {
+          //
+          onSnapshot(doc(db, "users", user.uid), (doc) => {
+            setLoading(false);
+            setProfileImagePath(doc.data().profileURL);
+          });
+        }
+      }
+    });
+  }, []);
   // logout
   const Logout = () => {
     signOut(auth).then(() => {
@@ -142,7 +168,18 @@ function ResponsiveAppBar() {
           <Box sx={{ flexGrow: 0 }}>
             <Tooltip title="Open settings">
               <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-                <Avatar alt="Remy Sharp" src="/static/images/avatar/2.jpg" />
+                {loading ? (
+                  <CircularProgress size={20} style={{ color: "white" }} />
+                ) : (
+                  <Avatar
+                    alt="Remy Sharp"
+                    src={
+                      profielImagePath === ""
+                        ? "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTlseazoU9HMxMy6AnQyEXjboZQaAXLhWmwtV6yFvc&s"
+                        : profielImagePath
+                    }
+                  />
+                )}
               </IconButton>
             </Tooltip>
             <Menu
@@ -165,7 +202,7 @@ function ResponsiveAppBar() {
                 <MenuItem
                   key={setting}
                   onClick={() => {
-                    setting === "Logout" ?  Logout() : navigate('/profile');
+                    setting === "Logout" ? Logout() : navigate("/profile");
                     // handleCloseUserMenu();
                   }}
                 >
