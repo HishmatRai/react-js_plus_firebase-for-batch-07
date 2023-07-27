@@ -21,6 +21,8 @@ const Home = () => {
   const [blog, setBlog] = useState([]);
   const [profielImagePath, setProfileImagePath] = useState("");
   const [fullName, setFullName] = useState("");
+  const [search, setSearch] = useState("");
+
   useEffect(() => {
     onAuthStateChanged(auth, async (user) => {
       if (user) {
@@ -61,7 +63,11 @@ const Home = () => {
       }
     });
   }, []);
-  console.log(blog);
+
+  const filterData = blog.filter((blog) => {
+    return blog.title?.toLowerCase().includes(search.toLowerCase());
+  });
+  console.log("filterData >>>>>", filterData);
   return (
     <div>
       <Navbar />
@@ -71,45 +77,69 @@ const Home = () => {
         <h1>data not available</h1>
       ) : (
         <div>
-          <h1>{blog.length}</h1>
-          <div style={{ display: "flex", flexDirection: "row" }}>
-            {blog
-              .map((v, i) => {
-                return (
-                  <div
-                    key={i}
-                    style={{
-                      border: "2px solid red",
-                      margin: "5px",
-                      width: "250px",
-                      height: "500px",
-                    }}
-                  >
-                    <div style={{ display: "flex" }}>
-                      <Avatar
-                        alt="Remy Sharp"
-                        src={
-                          profielImagePath === ""
-                            ? "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTlseazoU9HMxMy6AnQyEXjboZQaAXLhWmwtV6yFvc&s"
-                            : profielImagePath
-                        }
-                      />
-                      <div>
-                        <h6>{fullName}</h6>
+          <br />
+          <input
+            type="text"
+            placeholder="Search"
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+          />
+          {filterData.length === 0 ? (
+            <h1>Data not found!</h1>
+          ) : (
+            <div>
+              <h1>{filterData.length}</h1>
+              <div style={{ display: "flex", flexDirection: "row" }}>
+                {filterData
+                  .map((v, i) => {
+                    return (
+                      <div
+                        key={i}
+                        style={{
+                          border: "2px solid red",
+                          margin: "5px",
+                          width: "250px",
+                          height: "500px",
+                        }}
+                      >
+                        <div style={{ display: "flex" }}>
+                          <Avatar
+                            alt="Remy Sharp"
+                            src={
+                              profielImagePath === ""
+                                ? "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTlseazoU9HMxMy6AnQyEXjboZQaAXLhWmwtV6yFvc&s"
+                                : profielImagePath
+                            }
+                          />
+                          <div>
+                            <h6>{fullName}</h6>
+                            <p>
+                              {moment(v.created).format(
+                                "MMMM Do YYYY, h:mm:ss a"
+                              )}
+                            </p>
+                          </div>
+                        </div>
+                        <h1>
+                          {v.title.slice(0, 10)} {v.title.length >= 10 && "..."}
+                        </h1>
                         <p>
-                          {moment(v.created).format("MMMM Do YYYY, h:mm:ss a")}
+                          {v.details.slice(0, 200)}{" "}
+                          {v.details.length >= 200 && "..."}
                         </p>
+                        <img src={v.imagePath} height={150} width={150} />
+                        <button
+                          onClick={() => navigate(`/blog-details/${v.id}`)}
+                        >
+                          View
+                        </button>
                       </div>
-                    </div>
-                    <h1>{v.title.slice(0, 10)} {v.title.length >= 10 && "..."}</h1>
-                    <p>{v.details.slice(0,200)} {v.details.length >= 200 && "..."}</p>
-                    <img src={v.imagePath} height={150} width={150} />
-                    <button>View</button>
-                  </div>
-                );
-              })
-              .reverse()}
-          </div>
+                    );
+                  })
+                  .reverse()}
+              </div>
+            </div>
+          )}
         </div>
       )}
     </div>

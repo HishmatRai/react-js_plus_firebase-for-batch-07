@@ -10,6 +10,7 @@ import {
   ForgotPassword,
   CreateBlog,
   Profile,
+  BlogDetails
 } from "../../pages";
 const RouterNavigation = () => {
   return (
@@ -23,6 +24,7 @@ const RouterNavigation = () => {
         <Route path="/forgot-password" element={<ForgotPassword />} />
         <Route path="/create-blog" element={<CreateBlog />} />
         <Route path="/profile" element={<Profile />} />
+        <Route path="/blog-details/:id" element={<BlogDetails />} />
         <Route path="*" element={<NotFound />} />
       </Routes>
     </BrowserRouter>

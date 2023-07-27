@@ -7,6 +7,7 @@ import EmailVerification from "./email-verification";
 import ForgotPassword from "./forgot-password";
 import CreateBlog from "./create-blog";
 import Profile from "./profile";
+import BlogDetails from "./blog-details";
 export {
   Home,
   NotFound,
@@ -17,4 +18,5 @@ export {
   ForgotPassword,
   CreateBlog,
   Profile,
+  BlogDetails
 };

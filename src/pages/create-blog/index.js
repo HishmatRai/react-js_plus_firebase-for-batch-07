@@ -16,7 +16,13 @@ import PropTypes from "prop-types";
 import CircularProgress from "@mui/material/CircularProgress";
 import Typography from "@mui/material/Typography";
 import Box from "@mui/material/Box";
-import { getFirestore, collection, addDoc } from "firebase/firestore";
+import {
+  getFirestore,
+  collection,
+  addDoc,
+  doc,
+  updateDoc,
+} from "firebase/firestore";
 import firebase from "../../config/firebase";
 function CircularProgressWithLabel(props) {
   return (
@@ -65,13 +71,12 @@ const CreateBlog = () => {
   const [imagePath, setPath] = useState("");
   const [progress, setProgress] = useState(0);
   const [uploadStarted, setUploadStarted] = useState(false);
-  let [uid, setUid] = useState("");
-
+  const [uid, setUid] = useState("");
   useEffect(() => {
     onAuthStateChanged(auth, (user) => {
       if (user) {
         if (user.emailVerified) {
-          setUid(user.uid)
+          setUid(user.uid);
         } else {
           navigate("/email-verification");
         }
@@ -129,7 +134,11 @@ const CreateBlog = () => {
         details: details,
         imagePath: imagePath,
         uid: uid,
-        created:moment().format()
+        created: moment().format(),
+      });
+      const washingtonRef = doc(db, "blogs", docRef.id);
+      await updateDoc(washingtonRef, {
+        id: docRef.id,
       });
       setMessage("success");
       setMessageType("success");
