@@ -138,8 +138,8 @@ const CreateBlog = () => {
         imagePath: imagePath,
         uid: uid,
         created: moment().format(),
-        imageUid:imageUid
-        
+        imageUid:imageUid,
+        comment:[]
       });
       const washingtonRef = doc(db, "blogs", docRef.id);
       await updateDoc(washingtonRef, {
