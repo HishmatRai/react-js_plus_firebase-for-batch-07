@@ -72,6 +72,7 @@ const CreateBlog = () => {
   const [progress, setProgress] = useState(0);
   const [uploadStarted, setUploadStarted] = useState(false);
   const [uid, setUid] = useState("");
+  const [imageUid,setImageUid] = useState("")
   useEffect(() => {
     onAuthStateChanged(auth, (user) => {
       if (user) {
@@ -90,7 +91,8 @@ const CreateBlog = () => {
   const UploadFile = (e) => {
     setUploadStarted(true);
     let file = e.target.files[0];
-    const storageRef = ref(storage, `blog-images/${uuid()}`);
+    let newUid = uuid();
+    const storageRef = ref(storage, `blog-images/${newUid}`);
     const uploadTask = uploadBytesResumable(storageRef, file);
     uploadTask.on(
       "state_changed",
@@ -109,6 +111,7 @@ const CreateBlog = () => {
           setPath(downloadURL);
           setUploadStarted(false);
           setProgress("");
+          setImageUid(newUid)
         });
       }
     );
@@ -135,6 +138,8 @@ const CreateBlog = () => {
         imagePath: imagePath,
         uid: uid,
         created: moment().format(),
+        imageUid:imageUid
+        
       });
       const washingtonRef = doc(db, "blogs", docRef.id);
       await updateDoc(washingtonRef, {

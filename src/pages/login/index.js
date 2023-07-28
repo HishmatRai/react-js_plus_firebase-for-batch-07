@@ -5,8 +5,8 @@ import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
 const Login = () => {
   const auth = getAuth();
   const navigate = useNavigate();
-  const [email, setEmail] = useState("tatemad223@miqlab.com");
-  const [password, setPassword] = useState("123456789");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
   const [message, setMessage] = useState("");
   const [messageType, setMessageType] = useState("");
   const [loader, setLoader] = useState(false);
